@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.client import Client
-from app.schemas.client import ClientCreate
+from app.schemas.client import ClientCreate, ClientUpdate
 
 
 def create_client(
@@ -49,3 +49,32 @@ def list_clients(
         .order_by(Client.id)
         .all()
     )
+
+
+def update_client(
+    db: Session,
+    client_id: int,
+    law_office_id: int,
+    client_data: ClientUpdate,
+) -> Client | None:
+    client = (
+        db.query(Client)
+        .filter(
+            Client.id == client_id,
+            Client.law_office_id == law_office_id,
+        )
+        .first()
+    )
+
+    if client is None:
+        return None
+
+    client.full_name = client_data.full_name
+    client.address = client_data.address
+    client.contact_number = client_data.contact_number
+    client.email = client_data.email
+
+    db.flush()
+    db.refresh(client)
+
+    return client

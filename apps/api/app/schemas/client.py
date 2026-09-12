@@ -21,3 +21,10 @@ class ClientResponse(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ClientUpdate(BaseModel):
+    full_name: str
+    address: str | None = None
+    contact_number: str | None = None
+    email: str | None = None
