@@ -1,9 +1,20 @@
-from sqlalchemy import text
+from app.models.law_office import LawOffice
+from app.models.user import User
 
-from app.db.database import engine
 
+def test_law_office_user_relationship(db):
+    office = LawOffice(name="Test Law Office")
+    user = User(
+        email="test@example.com",
+        full_name="Test User",
+        role="STAFF",
+    )
 
-def test_database_connection():
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT 1"))
-        assert result.scalar() == 1
+    office.users.append(user)
+
+    db.add(office)
+    db.flush()
+
+    assert len(office.users) == 1
+    assert office.users[0].email == "test@example.com"
+    assert office.users[0].law_office_id == office.id

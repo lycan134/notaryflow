@@ -9,3 +9,6 @@ __pycache__/
 
 # Keep the example environment file
 !.env.example
+
+# VS Code
+.vscode/

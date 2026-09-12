@@ -3,6 +3,8 @@ from app.core.config import settings
 from app.db.database import Base
 from app.models.law_office import LawOffice
 
+from app.models.user import User
+
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
