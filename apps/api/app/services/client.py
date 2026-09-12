@@ -22,3 +22,18 @@ def create_client(
     db.refresh(client)
 
     return client
+
+
+def get_client(
+    db: Session,
+    client_id: int,
+    law_office_id: int,
+) -> Client | None:
+    return (
+        db.query(Client)
+        .filter(
+            Client.id == client_id,
+            Client.law_office_id == law_office_id,
+        )
+        .first()
+    )
