@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     database_url: str
     development_law_office_id: int
+    development_user_id: int
 
     model_config = SettingsConfigDict(
         env_file=".env",

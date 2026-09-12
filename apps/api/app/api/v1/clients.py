@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app.core.current_user import get_current_user
 from app.db.database import get_db
+from app.models.user import User
 from app.schemas.client import ClientCreate, ClientResponse
 from app.services.client import create_client
-from app.core.config import settings
 
 
 router = APIRouter(
@@ -21,12 +22,11 @@ router = APIRouter(
 def create_client_endpoint(
     client_data: ClientCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    development_law_office_id = settings.development_law_office_id
-
     client = create_client(
         db=db,
-        law_office_id=development_law_office_id,
+        law_office_id=current_user.law_office_id,
         client_data=client_data,
     )
 
