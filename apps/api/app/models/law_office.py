@@ -27,3 +27,8 @@ class LawOffice(Base):
         back_populates="law_office",
         cascade="all, delete-orphan",
     )
+    clients = relationship(
+        "Client",
+        back_populates="law_office",
+        cascade="all, delete-orphan",
+    )
