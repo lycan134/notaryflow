@@ -53,3 +53,8 @@ class Client(Base):
         "LawOffice",
         back_populates="clients",
     )
+    transactions = relationship(
+        "Transaction",
+        back_populates="client",
+        cascade="all, delete-orphan",
+    )

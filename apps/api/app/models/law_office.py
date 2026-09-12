@@ -32,3 +32,8 @@ class LawOffice(Base):
         back_populates="law_office",
         cascade="all, delete-orphan",
     )
+    transactions = relationship(
+        "Transaction",
+        back_populates="law_office",
+        cascade="all, delete-orphan",
+    )
