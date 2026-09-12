@@ -2,3 +2,10 @@
 __pycache__/
 *.py[cod]
 .venv/
+
+# Environment variables
+.env
+.env.*
+
+# Keep the example environment file
+!.env.example
