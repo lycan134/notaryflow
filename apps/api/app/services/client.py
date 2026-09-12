@@ -37,3 +37,15 @@ def get_client(
         )
         .first()
     )
+
+
+def list_clients(
+    db: Session,
+    law_office_id: int,
+) -> list[Client]:
+    return (
+        db.query(Client)
+        .filter(Client.law_office_id == law_office_id)
+        .order_by(Client.id)
+        .all()
+    )

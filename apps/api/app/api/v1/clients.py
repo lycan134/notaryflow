@@ -5,7 +5,7 @@ from app.core.current_user import get_current_user
 from app.db.database import get_db
 from app.models.user import User
 from app.schemas.client import ClientCreate, ClientResponse
-from app.services.client import create_client, get_client
+from app.services.client import create_client, get_client, list_clients
 
 
 router = APIRouter(
@@ -58,3 +58,17 @@ def get_client_endpoint(
         )
 
     return client
+
+
+@router.get(
+    "",
+    response_model=list[ClientResponse],
+)
+def list_clients_endpoint(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return list_clients(
+        db=db,
+        law_office_id=current_user.law_office_id,
+    )

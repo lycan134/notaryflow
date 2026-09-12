@@ -1,7 +1,7 @@
 from app.models.client import Client
 from app.models.law_office import LawOffice
 from app.schemas.client import ClientCreate
-from app.services.client import create_client, get_client
+from app.services.client import create_client, get_client, list_clients
 
 
 def test_create_client(db):
@@ -58,3 +58,46 @@ def test_get_client_is_tenant_scoped(db):
     assert client_from_a is not None
     assert client_from_a.full_name == "Tenant A Client"
     assert client_from_b is None
+
+
+def test_list_clients_is_tenant_scoped(db):
+    office_a = LawOffice(name="List Tenant A")
+    office_b = LawOffice(name="List Tenant B")
+
+    db.add_all([office_a, office_b])
+    db.flush()
+
+    client_a1 = Client(
+        law_office_id=office_a.id,
+        full_name="Tenant A Client 1",
+    )
+    client_a2 = Client(
+        law_office_id=office_a.id,
+        full_name="Tenant A Client 2",
+    )
+    client_b = Client(
+        law_office_id=office_b.id,
+        full_name="Tenant B Client",
+    )
+
+    db.add_all([client_a1, client_a2, client_b])
+    db.flush()
+
+    clients_from_a = list_clients(
+        db=db,
+        law_office_id=office_a.id,
+    )
+
+    clients_from_b = list_clients(
+        db=db,
+        law_office_id=office_b.id,
+    )
+
+    assert [client.full_name for client in clients_from_a] == [
+        "Tenant A Client 1",
+        "Tenant A Client 2",
+    ]
+
+    assert [client.full_name for client in clients_from_b] == [
+        "Tenant B Client",
+    ]

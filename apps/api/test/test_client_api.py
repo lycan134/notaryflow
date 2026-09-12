@@ -101,3 +101,80 @@ def test_get_client_endpoint_blocks_other_tenant():
 
         db.commit()
         db.close()
+
+
+def test_list_clients_endpoint():
+    db = SessionLocal()
+
+    try:
+        client_a = Client(
+            law_office_id=52,
+            full_name="List API Client A",
+        )
+        client_b = Client(
+            law_office_id=52,
+            full_name="List API Client B",
+        )
+
+        db.add_all([client_a, client_b])
+        db.commit()
+
+        response = client.get("/api/v1/clients")
+
+        assert response.status_code == 200
+
+        data = response.json()
+
+        returned_names = [item["full_name"] for item in data]
+
+        assert "List API Client A" in returned_names
+        assert "List API Client B" in returned_names
+
+    finally:
+        if "client_a" in locals() and client_a.id is not None:
+            db.delete(client_a)
+
+        if "client_b" in locals() and client_b.id is not None:
+            db.delete(client_b)
+
+        db.commit()
+        db.close()
+
+
+def test_list_clients_endpoint_excludes_other_tenant():
+    db = SessionLocal()
+
+    try:
+        other_office = LawOffice(
+            name="Other List API Test Office",
+        )
+        db.add(other_office)
+        db.flush()
+
+        other_client = Client(
+            law_office_id=other_office.id,
+            full_name="Other Tenant List Client",
+        )
+
+        db.add(other_client)
+        db.commit()
+
+        response = client.get("/api/v1/clients")
+
+        assert response.status_code == 200
+
+        data = response.json()
+
+        returned_names = [item["full_name"] for item in data]
+
+        assert "Other Tenant List Client" not in returned_names
+
+    finally:
+        if "other_client" in locals() and other_client.id is not None:
+            db.delete(other_client)
+
+        if "other_office" in locals() and other_office.id is not None:
+            db.delete(other_office)
+
+        db.commit()
+        db.close()
