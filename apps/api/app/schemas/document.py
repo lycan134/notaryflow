@@ -8,8 +8,9 @@ class DocumentCreate(BaseModel):
     uploaded_by_user_id: int
     filename: str
     document_type: str
-    status: str = "UPLOADED"
     storage_key: str
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class DocumentResponse(BaseModel):

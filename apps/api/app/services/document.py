@@ -41,7 +41,7 @@ def create_document(
         uploaded_by_user_id=document_data.uploaded_by_user_id,
         filename=document_data.filename,
         document_type=document_data.document_type,
-        status=document_data.status,
+        status="UPLOADED",
         storage_key=document_data.storage_key,
     )
 
