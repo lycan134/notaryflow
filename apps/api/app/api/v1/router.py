@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1.clients import router as clients_router
+from app.api.v1.documents import router as documents_router
 from app.api.v1.transactions import router as transactions_router
 
 
@@ -10,3 +11,4 @@ router = APIRouter(
 
 router.include_router(clients_router)
 router.include_router(transactions_router)
+router.include_router(documents_router)
